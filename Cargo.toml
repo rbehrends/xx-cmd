@@ -1,0 +1,40 @@
+[package]
+name = "xx-cmd"
+version = "1.0.0"
+edition = "2024"
+description = "A universal archive unpacker"
+license = "MIT"
+
+[[bin]]
+name = "xx"
+path = "src/main.rs"
+
+[features]
+default = ["seven-z"]
+seven-z = ["dep:sevenz-rust2"]
+
+[dependencies]
+
+ar = "0.9"
+bzip2 = "0.6"
+clap = { version = "4.5", features = ["derive"] }
+cpio = "0.4"
+flate2 = "1.1"
+filetime = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sevenz-rust2 = { version = "0.21.4", optional = true, default-features = false, features = [
+    "aes256",
+    "bzip2",
+    "brotli",
+    "deflate",
+    "lz4",
+    "ppmd",
+    "zstd",
+] }
+tar = "0.4"
+tempfile = "3.27"
+thiserror = "2.0"
+xz2 = "0.1"
+zstd = "0.13"
+zip = { version = "6.0", default-features = false, features = ["deflate", "bzip2", "xz", "zstd", "time"] }
