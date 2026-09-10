@@ -19,6 +19,25 @@ use support::{
 };
 
 #[test]
+fn derives_implicit_output_in_the_current_directory() {
+    let temp = tempfile::tempdir().unwrap();
+    let archive_directory = temp.path().join("archives");
+    fs::create_dir(&archive_directory).unwrap();
+    let archive = archive_directory.join("project.tar.gz");
+    write_tar_gzip(&archive).unwrap();
+
+    let output = run_xx(temp.path(), [archive.as_os_str()]);
+    assert_success(&output);
+
+    let extracted = temp.path().join("project");
+    assert_eq!(
+        fs::read(extracted.join("nested/file.txt")).unwrap(),
+        FILE_CONTENT
+    );
+    assert!(!archive_directory.join("project").exists());
+}
+
+#[test]
 fn extracts_the_supported_rust_generated_formats() {
     let cases: Vec<(&str, ArchiveWriter)> = vec![
         ("archive.tar", write_standard_tar),

@@ -50,7 +50,7 @@ Extract an archive to a directory derived from its name:
 $ xx source.tar.xz
 ```
 
-This creates the directory `source` beside `source.tar.xz` and populates it with the archive's contents. Note that if all files in the archive are contained inside the same directory, that directory becomes the output directory.
+This creates the directory `source` in the current working directory and populates it with the archive's contents; the archive's parent directory is not used for the derived destination. Note that if all files in the archive are contained inside the same directory, that directory becomes the output directory.
 
 Staging directories are named `.xx-*` and are in the same directory as the output. They are normally deleted upon completion, but interrupting the command may result in them staying around.
 

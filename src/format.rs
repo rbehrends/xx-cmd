@@ -95,7 +95,7 @@ pub(crate) fn derive_output(input: &Path) -> Option<PathBuf> {
         .map(|(suffix, _)| *suffix)?;
     let stem_len = file_name.len() - suffix.len();
     let stem = &file_name[..stem_len];
-    Some(input.with_file_name(stem))
+    Some(PathBuf::from(stem))
 }
 pub(crate) fn tar_kind(entry_type: EntryType) -> EntryKind {
     match entry_type {

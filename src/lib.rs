@@ -36,6 +36,10 @@ mod tests {
             PathBuf::from("a")
         );
         assert_eq!(
+            derive_output(Path::new("archives/a.tar.gz")).unwrap(),
+            PathBuf::from("a")
+        );
+        assert_eq!(
             resolve_format(Path::new("a.tbz2"), None).unwrap(),
             FormatId::TarBzip2
         );
