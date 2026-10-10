@@ -35,9 +35,14 @@ fn execute(cli: Cli) -> Result<()> {
     if !cli.list && (cli.zero || cli.json) {
         return Err(XxError::Usage("-0 and --json require --list".into()));
     }
-    if cli.list && (cli.rm || cli.overwrite || cli.output.is_some()) {
+    if cli.list && (cli.rm || cli.overwrite || cli.output.is_some() || cli.no_container_dir) {
         return Err(XxError::Usage(
-            "--rm, --overwrite, and --output cannot be used with --list".into(),
+            "--rm, --overwrite, --output, and --no-container-dir cannot be used with --list".into(),
+        ));
+    }
+    if cli.no_container_dir && cli.rm {
+        return Err(XxError::Usage(
+            "--rm cannot be used with --no-container-dir".into(),
         ));
     }
     if cli.zero && cli.json {
@@ -62,7 +67,7 @@ fn execute(cli: Cli) -> Result<()> {
         output: cli.output,
         mode: if cli.rm {
             OutputMode::Replace
-        } else if cli.overwrite {
+        } else if cli.overwrite || cli.no_container_dir {
             OutputMode::Merge
         } else {
             OutputMode::CreateOnly
@@ -100,6 +105,7 @@ fn execute(cli: Cli) -> Result<()> {
     let output = request
         .output
         .clone()
+        .or_else(|| cli.no_container_dir.then(|| Path::new(".").to_path_buf()))
         .or_else(|| derive_output(&request.input))
         .ok_or_else(|| {
             XxError::Usage(

@@ -6,7 +6,7 @@ use std::path::PathBuf;
     name = "xx",
     version,
     about = "Unpack common archive formats safely",
-    long_about = "xx extracts common archive formats into a directory derived from the archive name, or into a directory you choose with --output. It recognizes formats by filename suffix and supports tar, PAX, cpio, ar, 7z, ZIP, and JAR archives, including supported compressed tar, PAX, and cpio variants. Use --format when the format cannot be inferred from the filename.\n\nBy default, extraction is staged in a temporary directory beside the destination, validated, and then published. xx rejects unsafe paths and links that escape the extracted tree. Existing output directories are left untouched unless --rm or --overwrite is selected.\n\nUse --list to display archive contents instead of extracting them. Listings can include metadata, use NUL-delimited fields, or be emitted as JSON."
+    long_about = "xx extracts common archive formats into a directory derived from the archive name, or into a directory you choose with --output. Use --no-container-dir to extract directly into the current or specified output directory. It recognizes formats by filename suffix and supports tar, PAX, cpio, ar, 7z, ZIP, and JAR archives, including supported compressed tar, PAX, and cpio variants. Use --format when the format cannot be inferred from the filename.\n\nBy default, extraction is staged in a temporary directory beside the destination, validated, and then published. xx rejects unsafe paths and links that escape the extracted tree. Existing output directories are left untouched unless --rm or --overwrite is selected. With --no-container-dir, entries are merged into the current or specified output directory and conflicts are replaced; --overwrite is not required, and --rm cannot be combined with that option.\n\nUse --list to display archive contents instead of extracting them. Listings can include metadata, use NUL-delimited fields, or be emitted as JSON."
 )]
 pub(crate) struct Cli {
     #[arg(
@@ -61,6 +61,12 @@ pub(crate) struct Cli {
         help = "Write output to this directory instead of the derived name"
     )]
     pub(crate) output: Option<PathBuf>,
+    #[arg(
+        short = 'n',
+        long = "no-container-dir",
+        help = "Merge directly into the current directory or --output directory, replacing conflicts"
+    )]
+    pub(crate) no_container_dir: bool,
     #[arg(help = "Archive file to list or extract")]
     pub(crate) archive: PathBuf,
 }

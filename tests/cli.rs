@@ -38,6 +38,53 @@ fn derives_implicit_output_in_the_current_directory() {
 }
 
 #[test]
+fn no_container_dir_extracts_multiple_top_level_entries_into_the_current_directory() {
+    let temp = tempfile::tempdir().unwrap();
+    let archive = temp.path().join("archive.zip");
+    write_zip_with_entries(
+        &archive,
+        &[("first.txt", b"first"), ("nested/second.txt", b"second")],
+    )
+    .unwrap();
+    fs::write(temp.path().join("first.txt"), b"old content").unwrap();
+    fs::write(temp.path().join("unrelated"), b"keep me").unwrap();
+
+    let output = run_xx(
+        temp.path(),
+        xx_args!(["--no-container-dir", archive.as_os_str().to_owned()]),
+    );
+    assert_success(&output);
+    assert_eq!(fs::read(temp.path().join("first.txt")).unwrap(), b"first");
+    assert_eq!(
+        fs::read(temp.path().join("nested/second.txt")).unwrap(),
+        b"second"
+    );
+    assert_eq!(fs::read(temp.path().join("unrelated")).unwrap(), b"keep me");
+    assert!(!temp.path().join("archive").exists());
+}
+
+#[test]
+fn no_container_dir_uses_the_output_directory_as_the_extraction_root() {
+    let temp = tempfile::tempdir().unwrap();
+    let archive = temp.path().join("archive.tar");
+    write_standard_tar(&archive).unwrap();
+    let output_path = temp.path().join("destination");
+
+    let output = run_xx(
+        temp.path(),
+        xx_args!([
+            "-n",
+            "--output",
+            output_path.as_os_str().to_owned(),
+            archive.as_os_str().to_owned(),
+        ]),
+    );
+    assert_success(&output);
+    assert!(output_path.join("nested/file.txt").exists());
+    assert!(!output_path.join(ROOT).exists());
+}
+
+#[test]
 fn extracts_the_supported_rust_generated_formats() {
     let cases: Vec<(&str, ArchiveWriter)> = vec![
         ("archive.tar", write_standard_tar),

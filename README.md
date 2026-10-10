@@ -85,6 +85,15 @@ $ xx --overwrite source.tar.gz
 
 `xx` removes one redundant directory from the top of the extracted tree. If the staging root contains exactly one directory, `xx` atomically moves that directory as the output root. Otherwise, it moves the staging root. The name of the output directory is either derived from the filename of the archive, or the `-o/--output` option, if provided.
 
+Use `-n/--no-container-dir` to extract directly into the current directory, or into the directory specified by `--output`, instead of creating an archive-named output directory:
+
+```console
+$ xx -n source.tar.gz
+$ xx --no-container-dir --output vendor source.tar.gz
+```
+
+This mode merges extracted entries into the destination, replaces conflicts, and retains unrelated entries; `--overwrite` is not required. `--rm` cannot be combined with `--no-container-dir`.
+
 For example, if `project.tar` contains only `project/src` and `project/Cargo.toml`, this command:
 
 ```console
@@ -148,6 +157,7 @@ Stream-oriented formats, such as tar, use one extraction worker even when `--thr
 | `-J, --json` | Write the listing as one JSON array. |
 | `-p, --progress` | Report extraction or listing phase, format, completed entries, and bytes on standard error. |
 | `-o, --output <DIR>` | Set the output directory. |
+| `-n, --no-container-dir` | Merge directly into the current or specified output directory, replacing conflicts. |
 | `-h, --help` | Print help. |
 | `-V, --version` | Print the version. |
 
