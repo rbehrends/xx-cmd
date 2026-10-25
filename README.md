@@ -24,6 +24,12 @@ It has the dual purpose of (1) not having to remember and type the exact command
 $ cargo install --path . --locked
 ```
 
+or directly from GitHub:
+
+```console
+$ cargo install --git https://github.com/rbehrends/xx-cmd
+```
+
 The default build includes 7z support. To omit it, build without default features:
 
 ```console
@@ -222,3 +228,7 @@ $ just verify
 ## License
 
 The package uses the MIT License.
+
+## Notes
+
+This project was created with AI assistance using various models.
